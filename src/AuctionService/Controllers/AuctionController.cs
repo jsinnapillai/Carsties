@@ -123,14 +123,13 @@ namespace AuctionService.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteAction(Guid id)
         {
-            var auction = await _context.Auctions
-           .FindAsync(id);
+            var auction = await _context.Auctions.FindAsync(id);
 
             if (auction == null) return NotFound();
 
             _context.Auctions.Remove(auction);
 
-            await _publishEndpoint.Publish(_mapper.Map<AuctionDeleted>(new {Id = auction.Id.ToString() }));
+            await _publishEndpoint.Publish<AuctionDeleted>(new {Id = auction.Id.ToString() });
 
             var result = await _context.SaveChangesAsync() > 0;
 
