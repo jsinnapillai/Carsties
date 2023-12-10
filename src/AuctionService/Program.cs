@@ -1,6 +1,7 @@
 using AuctionService.Consumers;
 using AuctionService.Data;
 using MassTransit;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -30,9 +31,21 @@ x.AddEntityFrameworkOutbox<AuctionDBContext>(o => {
       cfg.ConfigureEndpoints(context);
    });
 });
+
+// added authentcation verification
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+.AddJwtBearer(options => {
+   options.Authority = builder.Configuration["IdentityServiceUrl"];
+   options.RequireHttpsMetadata = false;
+   options.TokenValidationParameters.ValidateAudience = false;
+   options.TokenValidationParameters.NameClaimType = "username";
+});
+
+
 var app = builder.Build();
  
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
+app.UseAuthentication();
 
  app.UseAuthorization();
 
