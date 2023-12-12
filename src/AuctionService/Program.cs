@@ -1,8 +1,13 @@
 using AuctionService.Consumers;
 using AuctionService.Data;
 using MassTransit;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Web;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,13 +37,38 @@ x.AddEntityFrameworkOutbox<AuctionDBContext>(o => {
    });
 });
 
-// added authentcation verification
+
+//  builder.Services.AddAuthentication(sharedOptions =>
+//             {
+//                 sharedOptions.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+//                 sharedOptions.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+//                 sharedOptions.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+//             })
+//             .AddCookie()
+//             .AddOpenIdConnect(options =>
+//             {
+//                 options.Authority = "https://kanga.cd14.net/adfs";
+//                 options.ClientId = "9ec38358-8409-4f08-98b7-4bcbfb065b59"; // Replace with your client ID
+//                 options.ResponseType = OpenIdConnectResponseType.CodeIdToken;
+//                 options.CallbackPath = "/signin-adfs"; // Replace with your callback path
+
+//                 // Configure other options as needed based on your ADFS setup
+
+//                 options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+//                 {
+//                     // Configure token validation parameters if needed
+//                 };
+//             });
+
+
+ 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 .AddJwtBearer(options => {
    options.Authority = builder.Configuration["IdentityServiceUrl"];
    options.RequireHttpsMetadata = false;
    options.TokenValidationParameters.ValidateAudience = false;
-   options.TokenValidationParameters.NameClaimType = "username";
+   // options.TokenValidationParameters.NameClaimType = "username";
+     options.TokenValidationParameters.NameClaimType = "Username";
 });
 
 

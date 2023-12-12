@@ -76,7 +76,7 @@ namespace AuctionService.Controllers
             var auction = _mapper.Map<Auction>(auctionDto);
             // TODO Current user as seller
 
-            auction.Seller = User.Identity.Name ;
+            auction.Seller = User.Identity.Name;
             _context.Auctions.Add(auction);
 
             /*publish events*/
@@ -109,7 +109,7 @@ namespace AuctionService.Controllers
             if (auction == null) return NotFound();
 
             /// TOD check seller = username
-            if(auction.Seller != User.Identity.Name) return Forbid();
+            if (auction.Seller != User.Identity.Name) return Forbid();
             /// 
             auction.Item.Make = updateAuctionDto.Make ?? auction.Item.Make;
             auction.Item.Model = updateAuctionDto.Model ?? auction.Item.Model;
@@ -131,7 +131,8 @@ namespace AuctionService.Controllers
             var auction = await _context.Auctions.FindAsync(id);
 
             if (auction == null) return NotFound();
-                        if(auction.Seller != User.Identity.Name) return Forbid();
+            
+            if (auction.Seller != User.Identity.Name) return Forbid();
 
             _context.Auctions.Remove(auction);
 
