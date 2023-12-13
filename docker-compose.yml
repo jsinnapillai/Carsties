@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  auctionservice:
+    image: ${DOCKER_REGISTRY-}auctionservice
+    build:
+      context: .
+      dockerfile: src/AuctionService/Dockerfile
